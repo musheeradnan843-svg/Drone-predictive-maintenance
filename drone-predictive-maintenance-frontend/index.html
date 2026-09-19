@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKYMAINTAIN | Predictive Maintenance</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="drone">✦</div>
+    <div><h1>SKYMAINTAIN</h1><p>Drone-Assisted Predictive Maintenance</p></div>
+  </div>
+  <div class="online"><span></span> API SYSTEM ONLINE</div>
+</header>
+
+<main>
+<section class="hero">
+  <div>
+    <small>UAV • INDUSTRIAL MONITORING</small>
+    <h2>Machine Health <b>Intelligence</b></h2>
+    <p>Enter machine sensor readings. The prediction engine evaluates failure risk and unusual operating behavior.</p>
+  </div>
+  <div class="radar-card"><div class="radar"><i></i></div><div><small>DRONE MONITOR</small><strong>ACTIVE SCAN</strong></div></div>
+</section>
+
+<section class="grid">
+  <div class="panel">
+    <div class="heading"><div><small>01 / SENSOR INPUT</small><h3>Machine Parameters</h3></div><label>LIVE</label></div>
+
+    <form id="predictionForm">
+      <div class="fields">
+        <label>Machine Type
+          <select id="Type"><option>L</option><option selected>M</option><option>H</option></select>
+        </label>
+        <label>Air Temperature (K)<input id="Air_Temperature" type="number" step="0.1" value="298.1" required></label>
+        <label>Process Temperature (K)<input id="Process_Temperature" type="number" step="0.1" value="308.6" required></label>
+        <label>Rotational Speed (rpm)<input id="Rotational_Speed" type="number" value="1500" required></label>
+        <label>Torque (Nm)<input id="Torque" type="number" step="0.1" value="42.8" required></label>
+        <label>Tool Wear (min)<input id="Tool_Wear" type="number" value="100" required></label>
+      </div>
+      <button id="predictBtn" type="submit">◈ &nbsp; RUN MAINTENANCE SCAN <b>→</b></button>
+    </form>
+    <p class="endpoint">POST &nbsp; <code>/predict</code> &nbsp; • &nbsp; FastAPI endpoint</p>
+  </div>
+
+  <div class="panel">
+    <div class="heading"><div><small>02 / AI ANALYSIS</small><h3>Prediction Results</h3></div><label id="badge" class="waiting">WAITING</label></div>
+
+    <div id="empty" class="empty"><div>◎</div><h4>Awaiting machine scan</h4><p>Enter sensor values and run the maintenance scan.</p></div>
+
+    <div id="results" class="results hidden">
+      <div class="result" id="failureCard"><span class="icon">⚠</span><div><small>Machine Failure</small><strong id="failureStatus">—</strong><em>XGBoost model</em></div><b id="failurePrediction">—</b></div>
+      <div class="result" id="anomalyCard"><span class="icon">◌</span><div><small>Operating Behavior</small><strong id="anomalyStatus">—</strong><em>Isolation Forest</em></div><b id="anomalyPrediction">—</b></div>
+      <div class="score"><div><div><small>Anomaly Score</small><em>Higher = more normal behavior</em></div><strong id="anomalyScore">—</strong></div><div class="bar"><i id="scoreFill"></i></div></div>
+      <div id="error" class="error hidden"></div>
+    </div>
+  </div>
+</section>
+
+<section class="info">
+  <div><b>01</b><p><strong>Failure Prediction</strong><br>XGBoost evaluates the sensor pattern.</p></div>
+  <div><b>02</b><p><strong>Anomaly Detection</strong><br>Isolation Forest detects unusual behavior.</p></div>
+  <div><b>03</b><p><strong>Maintenance Decision</strong><br>Results support inspection planning.</p></div>
+</section>
+</main>
+
+<footer>SKYMAINTAIN • FastAPI + XGBoost + Isolation Forest + PostgreSQL</footer>
+<script src="script.js"></script>
+</body>
+</html>

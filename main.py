@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import pandas as pd
 import joblib
-
+import psycopg
+import os
+from dotenv import load_dotenv
 
 # -----------------------------
 # Load saved models and objects
@@ -13,6 +15,15 @@ iso_model = joblib.load("isolation_forest_model.joblib")
 scaler = joblib.load("scaler.joblib")
 encoder = joblib.load("onehot_encoder.joblib")
 
+load_dotenv()  # Load environment variables from .env file
+
+conn = psycopg.connect(
+    host="localhost",
+    port=5432,
+    dbname="predictive-maintenance",
+    user="postgres",
+    password=os.getenv("DB_PASSWORD")
+)
 
 # -----------------------------
 # Create FastAPI app
@@ -24,6 +35,15 @@ app = FastAPI(
     version="1.0"
 )
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # -----------------------------
 # Input schema
@@ -134,6 +154,41 @@ def predict_machine(data: MachineInput):
 
     anomaly_result = "Anomaly" if anomaly_prediction == -1 else "Normal"
 
+    # -----------------------------
+    # Save prediction to PostgreSQL
+    # -----------------------------
+
+    with conn.cursor() as cursor:
+
+        cursor.execute(
+            """
+            INSERT INTO predictions (
+                type,
+                air_temperature,
+                process_temperature,
+                rotational_speed,
+                torque,
+                tool_wear,
+                failure_prediction,
+                anomaly_prediction,
+                anomaly_score
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (
+                data.Type,
+                data.Air_Temperature,
+                data.Process_Temperature,
+                data.Rotational_Speed,
+                data.Torque,
+                data.Tool_Wear,
+                int(failure_prediction),
+                int(anomaly_prediction),
+                float(anomaly_score)
+            )
+        )
+
+    conn.commit()
 
     # -----------------------------
     # API response
