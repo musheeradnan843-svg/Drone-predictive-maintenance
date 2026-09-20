@@ -94,3 +94,64 @@ The final XGBoost model predicts:
 ```text
 0 → No Failure
 1 → Failure
+
+                         USER
+                           |
+                           v
+                HTML + CSS + JavaScript
+                           |
+                           | Sensor Input
+                           v
+                     JavaScript
+                           |
+                           | POST /predict
+                           v
+                   FASTAPI BACKEND
+                           |
+                           v
+                  INPUT VALIDATION
+                           |
+                           v
+                 DATA PREPROCESSING
+                           |
+              +------------+------------+
+              |                         |
+              v                         v
+       OneHotEncoder              StandardScaler
+              |                         |
+              +------------+------------+
+                           |
+                           v
+                    PROCESSED INPUT
+                           |
+              +------------+------------+
+              |                         |
+              v                         v
+           XGBoost              Isolation Forest
+              |                         |
+              v                         v
+      Machine Failure            Anomaly Detection
+       Prediction                      |
+              |                         v
+              |                   Anomaly Score
+              |                         |
+              +------------+------------+
+                           |
+                           v
+                  PREDICTION RESULTS
+                           |
+                           v
+                     PostgreSQL
+                  Prediction History
+                           |
+                           v
+                     JSON Response
+                           |
+                           v
+                      JavaScript
+                           |
+                           v
+                   FRONTEND DISPLAY
+                           |
+                           v
+                         USER
