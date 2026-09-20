@@ -95,7 +95,7 @@ The final XGBoost model predicts:
 0 → No Failure
 1 → Failure
 
-## Anomaly Detection
+**## Anomaly Detection
 
 Isolation Forest is used for unsupervised anomaly detection.
 
