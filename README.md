@@ -2,11 +2,25 @@
 
 A machine learning based predictive maintenance system that predicts machine failure and detects unusual machine behavior using industrial sensor data.
 
-The project uses XGBoost for machine failure prediction and Isolation Forest for anomaly detection. A FastAPI backend is used to serve the trained models through an API.
+The project uses **XGBoost** for machine failure prediction and **Isolation Forest** for anomaly detection. A **FastAPI** backend serves the trained models through an API, **PostgreSQL** stores prediction history for monitoring, and an interactive frontend built with **HTML, CSS, and JavaScript** allows users to interact with the system.
+
+---
+
+## Project Context
+
+The project is designed around a **drone-assisted predictive maintenance** concept for monitoring industrial machines.
+
+The current prototype uses **industrial machine sensor data** rather than drone imagery or drone telemetry. The "drone-assisted" concept represents the intended application context for machine monitoring.
+
+The current system focuses on sensor-based predictive maintenance using machine operating data such as temperature, rotational speed, torque, and tool wear.
+
+In a future version, drone telemetry or inspection data could be integrated with the maintenance system.
+
+---
 
 ## Project Overview
 
-Predictive maintenance helps identify potential machine problems before they result in major failures.
+Predictive maintenance aims to identify potential machine problems before they result in major failures.
 
 This project uses machine sensor information such as:
 
@@ -17,16 +31,24 @@ This project uses machine sensor information such as:
 - Torque
 - Tool Wear
 
-The system performs two tasks:
+The system performs two main tasks:
 
-1. Predicts whether a machine failure is likely to occur.
-2. Detects unusual machine behavior using anomaly detection.
+1. **Machine Failure Prediction**
+   - Predicts whether a machine is likely to fail.
+   - Uses XGBoost classification.
+
+2. **Anomaly Detection**
+   - Detects unusual machine operating behavior.
+   - Uses Isolation Forest.
+   - Provides an anomaly score to indicate how unusual the machine's operating condition is.
+
+---
 
 ## Dataset
 
 The project uses the **AI4I 2020 Predictive Maintenance Dataset**.
 
-Dataset features used in this project:
+### Features Used
 
 - Type
 - Air temperature [K]
@@ -35,17 +57,27 @@ Dataset features used in this project:
 - Torque [Nm]
 - Tool wear [min]
 
-Target:
+### Target
 
 - Machine failure
 
-The original dataset also contains failure-mode related columns that were not used as model input.
+The original dataset also contains failure-mode related columns such as:
+
+- TWF
+- HDF
+- PWF
+- OSF
+- RNF
+
+These failure-mode columns were not used as model input features.
+
+---
 
 ## Machine Learning
 
 ### Failure Prediction
 
-Several classification models were evaluated, including:
+Several classification models were evaluated during the project:
 
 - Logistic Regression
 - Decision Tree
@@ -55,56 +87,10 @@ Several classification models were evaluated, including:
 - XGBoost
 - Support Vector Machine
 
-XGBoost was selected as the final failure prediction model and further tuned using GridSearchCV.
+XGBoost was selected as the final machine failure prediction model and further tuned using **GridSearchCV**.
 
-### Anomaly Detection
-
-Isolation Forest was used for unsupervised anomaly detection.
-
-Unlike the failure prediction model, Isolation Forest does not use the machine failure target during training. It identifies observations that have unusual combinations of sensor values.
-
-The anomaly detection output includes:
-
-- Normal
-- Anomaly
-- Anomaly Score
-
-## Data Preprocessing
-
-The preprocessing pipeline includes:
-
-- One-hot encoding for the machine Type feature
-- StandardScaler for numerical features
-- Train-test split with stratification
-- Reusing the same preprocessing objects during API prediction
-
-The trained preprocessing objects are saved using Joblib.
-
-## FastAPI
-
-The trained models are integrated into a FastAPI application.
-
-The API accepts machine sensor values and returns:
-
-- Failure prediction
-- Failure status
-- Anomaly prediction
-- Anomaly status
-- Anomaly score
-
-### API Flow
+The final XGBoost model predicts:
 
 ```text
-Client
-   ↓
-FastAPI /predict
-   ↓
-Input Validation
-   ↓
-Data Preprocessing
-   ↓
-XGBoost + Isolation Forest
-   ↓
-Prediction Results
-   ↓
-JSON Response
+0 → No Failure
+1 → Failure
