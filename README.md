@@ -95,6 +95,30 @@ The final XGBoost model predicts:
 0 → No Failure
 1 → Failure
 
+**## Anomaly Detection
+
+Isolation Forest is used for unsupervised anomaly detection.
+
+Unlike XGBoost, Isolation Forest does not use the `Machine failure`
+target during training. It identifies unusual combinations of machine
+sensor values.
+
+The model produces:
+
+- `1` → Normal
+- `-1` → Anomaly
+
+It also provides an anomaly score:
+
+- Higher score → more normal behavior
+- Lower score → more unusual behavior
+
+The anomaly score is not a failure probability.
+
+An anomaly does not necessarily mean that the machine has failed.
+It indicates that the machine's current operating behavior is unusual
+compared with the patterns learned by the model.**
+
                          USER
                            |
                            v
